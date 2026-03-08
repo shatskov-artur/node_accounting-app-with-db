@@ -2,7 +2,7 @@
 
 const express = require('express');
 const {
-  models: { User, Expense },
+  models: { User, Expense, Category },
 } = require('./models/models');
 
 const createServer = () => {
@@ -146,6 +146,57 @@ const createServer = () => {
     }
 
     await expense.destroy();
+    res.sendStatus(204);
+  });
+
+  // Categories
+  app.get('/categories', async (_req, res) => {
+    const categories = await Category.findAll();
+
+    res.json(categories);
+  });
+
+  app.post('/categories', async (req, res) => {
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    const category = await Category.create({ name });
+
+    res.status(201).json(category);
+  });
+
+  app.get('/categories/:id', async (req, res) => {
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    res.json(category);
+  });
+
+  app.patch('/categories/:id', async (req, res) => {
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    await category.update(req.body);
+    res.json(category);
+  });
+
+  app.delete('/categories/:id', async (req, res) => {
+    const category = await Category.findByPk(req.params.id);
+
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    await category.destroy();
     res.sendStatus(204);
   });
 
