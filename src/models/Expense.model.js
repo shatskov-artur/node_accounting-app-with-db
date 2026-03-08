@@ -11,6 +11,7 @@ const Expense = sequelize.define(
     title: { type: DataTypes.STRING, allowNull: false },
     amount: { type: DataTypes.FLOAT, allowNull: false },
     category: { type: DataTypes.STRING },
+    categoryId: { type: DataTypes.INTEGER, references: { model: 'categories', key: 'id' } },
     note: { type: DataTypes.STRING },
   },
   { timestamps: false },
